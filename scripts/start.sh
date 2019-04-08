@@ -3,11 +3,6 @@
 cp /usr/share/zoneinfo/UTC /etc/localtime
 echo "UTC" > /etc/TZ
 
-#ssh setting
-mkdir -p -m 0700 /root/.ssh
-echo "" > /root/.ssh/config
-echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
-
 #nginx setting
 chown -Rf nginx.nginx /data/project/www/
 
@@ -16,9 +11,9 @@ lastlinephpconf="$(grep "." /usr/local/etc/php-fpm.conf | tail -1)"
 if [[ $lastlinephpconf == *"php_flag[display_errors]"* ]]; then
  sed -i '$ d' /usr/local/etc/php-fpm.conf
 fi
-
 # Display PHP error's or not
 echo php_flag[display_errors] = off >> /usr/local/etc/php-fpm.d/www.conf
+
 # Display Version Details or not
 sed -i "s/expose_php = On/expose_php = Off/g" /usr/local/etc/php-fpm.conf
 
