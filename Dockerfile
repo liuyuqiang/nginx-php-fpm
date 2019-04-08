@@ -226,11 +226,12 @@ ADD conf/nginx.conf /etc/nginx/nginx.conf
 
 # nginx site conf
 RUN mkdir -p /etc/nginx/include/ && \
-mkdir -p /etc/nginx/ssl/ && \
-rm -Rf /var/www/* && \
-mkdir /data/project/www/
+    mkdir -p /etc/nginx/ssl/ && \
+    rm -Rf /var/www/* && \
+    mkdir -p /data/project/www/ && \
+    mkdir -p /data/logs/
 
-ADD conf/include/www /etc/nginx/include/www
+ADD conf/nginx/include/ /etc/nginx/include/
 ADD conf/www/ /data/project/www/
 
 # tweak php-fpm config

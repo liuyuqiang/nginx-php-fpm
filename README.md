@@ -43,7 +43,10 @@ docker pull liuyuqiang/nginx-php-fpm:latest
 ### Running
 
 ```
-docker run -d liuyuqiang/nginx-php-fpm --name nginx-php-fpm
+docker run --name="nginx-php-fpm" -d nginx-php-fpm
+```
+```
+docker run --name="nginx-php-fpm" nginx-php-fpm
 ```
 
 ### docker exec
