@@ -19,6 +19,9 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 | Python | 2.7.15(System) |
 | Supervisor | 3.3.4(System) |
 
+### PHP Extensions
+
+- [PHP Extensions ](https://github.com/liuyuqiang/nginx-php-fpm/blob/master/docs/php_extensions.md)
 
 ### Links
 
