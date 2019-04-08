@@ -262,5 +262,6 @@ RUN chmod 755 /start.sh
 
 EXPOSE 443 80
 
-WORKDIR "/data/www/project/html"
+WORKDIR "/data/project/www/"
+
 CMD ["/start.sh"]

@@ -8,9 +8,8 @@ mkdir -p -m 0700 /root/.ssh
 echo "" > /root/.ssh/config
 echo -e "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
 
-#nginx web root setting
-WEBROOT=/data/project/www/
-chown -Rf nginx.nginx ${WEBROOT}
+#nginx setting
+chown -Rf nginx.nginx /data/project/www/
 
 #php setting
 lastlinephpconf="$(grep "." /usr/local/etc/php-fpm.conf | tail -1)"

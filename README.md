@@ -22,14 +22,15 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 
 ### Links
 
-- [https://registry.hub.docker.com/u/liuyuqiang/nginx-php-fpm/](https://registry.hub.docker.com/u/liuyuqiang/nginx-php-fpm/)
+- [https://hub.docker.com/r/liuyuqiang/nginx-php-fpm/](https://hub.docker.com/r/liuyuqiang/nginx-php-fpm/)
 
 ## Quick Start
 
 ## Building
+
 ```
 git clone https://github.com/liuyuqiang/nginx-php-fpm
-.git
+cd nginx-php-fpm/
 docker build -t nginx-php-fpm:latest .
 ```
 
@@ -38,17 +39,24 @@ docker build -t nginx-php-fpm:latest .
 ```
 docker pull liuyuqiang/nginx-php-fpm:latest
 ```
+
 ### Running
+
 ```
-sudo docker run -d liuyuqiang/nginx-php-fpm
+docker run -d liuyuqiang/nginx-php-fpm --name nginx-php-fpm
 ```
+
 ### docker exec
+
 ```
-docker exec -t -i nginx /bin/bash
+docker exec -t -i nginx-php-fpm /bin/bash
 ```
-### Resart php-fpm
+
+### Restart php-fpm or nginx
+
 ```
 supervisorctl restart php-fpm
+supervisorctl restart nginx
 ```
 
 ## Using environment variables
@@ -56,11 +64,15 @@ supervisorctl restart php-fpm
 ```
 sudo docker run -d -e 'YOUR_VAR=VALUE' liuyuqiang/nginx-php-fpm
 ```
+
 You can then use PHP to get the environment variable into your code:
+
 ```
 string getenv ( string $YOUR_VAR )
 ```
+
 Another example would be:
+
 ```
 <?php
 echo $_ENV["APP_ENV"];
