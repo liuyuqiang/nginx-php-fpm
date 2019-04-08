@@ -12,6 +12,7 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 
 | Software | Version |
 |-----|-------|
+|Docker | 18.09.4|
 | Alpine | 3.9 |
 | Git | 2.20.1(System) |
 | Nginx | 1.14.2 |
@@ -19,9 +20,13 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 | Python | 2.7.15(System) |
 | Supervisor | 3.3.4(System) |
 
+### Docker Layout
+
+- [Docker Layout](https://github.com/liuyuqiang/nginx-php-fpm/blob/master/docs/layout.md)
+
 ### PHP Extensions
 
-- [PHP Extensions ](https://github.com/liuyuqiang/nginx-php-fpm/blob/master/docs/php_extensions.md)
+- [PHP Extensions](https://github.com/liuyuqiang/nginx-php-fpm/blob/master/docs/php_extensions.md)
 
 ### Links
 
