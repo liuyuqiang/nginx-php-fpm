@@ -48,7 +48,7 @@ docker run --name="nginx-php-fpm" -d nginx-php-fpm
 ```
 clean up mode
 ```
-docker run --name="nginx-php-fpm" --rm nginx-php-fpm -t -i /bin/bash
+docker run --name="nginx-php-fpm" --rm nginx-php-fpm
 ```
 
 ### docker exec
