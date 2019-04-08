@@ -42,11 +42,13 @@ docker pull liuyuqiang/nginx-php-fpm:latest
 
 ### Running
 
+daemon mode
 ```
 docker run --name="nginx-php-fpm" -d nginx-php-fpm
 ```
+clean up mode
 ```
-docker run --name="nginx-php-fpm" nginx-php-fpm
+docker run --name="nginx-php-fpm" --rm nginx-php-fpm -t -i /bin/bash
 ```
 
 ### docker exec
@@ -65,7 +67,7 @@ supervisorctl restart nginx
 ## Using environment variables
 
 ```
-sudo docker run -d -e 'YOUR_VAR=VALUE' liuyuqiang/nginx-php-fpm
+sudo docker run -d -e 'YOUR_VAR=VALUE' nginx-php-fpm
 ```
 
 You can then use PHP to get the environment variable into your code:

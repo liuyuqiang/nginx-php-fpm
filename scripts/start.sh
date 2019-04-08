@@ -7,20 +7,14 @@ echo "UTC" > /etc/TZ
 chown -Rf nginx.nginx /data/project/www/
 
 #php setting
-lastlinephpconf="$(grep "." /usr/local/etc/php-fpm.conf | tail -1)"
-if [[ $lastlinephpconf == *"php_flag[display_errors]"* ]]; then
- sed -i '$ d' /usr/local/etc/php-fpm.conf
-fi
-# Display PHP error's or not
-echo php_flag[display_errors] = off >> /usr/local/etc/php-fpm.d/www.conf
+sed -i '/php_flag\[display_errors\]/ d' /usr/local/etc/php-fpm.conf
+sed -i "s/expose_php = On/expose_php = Off/g" /usr/local/etc/php/php.ini
+sed -i "s/display_errors = On/display_errors = Off/g" /usr/local/etc/php/php.ini
+sed -i "s/expose_php = On/expose_php = Off/g" /usr/local/etc/php/php.ini
 
-# Display Version Details or not
-sed -i "s/expose_php = On/expose_php = Off/g" /usr/local/etc/php-fpm.conf
-
-#system setting
-echo date.timezone=$(cat /etc/TZ) > /usr/local/etc/php/conf.d/timezone.ini
-
-# Display errors in docker logs
+sed -i "s/expose_php = On/expose_php = Off/g" /usr/local/etc/php/conf.d/docker-vars.ini
+echo date.timezone=$(cat /etc/TZ) >> /usr/local/etc/php/conf.d/docker-vars.ini
+echo "display_errors = Off" >> /usr/local/etc/php/conf.d/docker-vars.ini
 echo "log_errors = On" >> /usr/local/etc/php/conf.d/docker-vars.ini
 echo "error_log = /dev/stderr" >> /usr/local/etc/php/conf.d/docker-vars.ini
 

@@ -22,8 +22,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     --sbin-path=/usr/sbin/nginx \
     --modules-path=/usr/lib/nginx/modules \
     --conf-path=/etc/nginx/nginx.conf \
-    --error-log-path=/var/log/nginx/error.log \
-    --http-log-path=/var/log/nginx/access.log \
+    --error-log-path=/data/logs/nginx/error.log \
+    --http-log-path=/data/logs/nginx/access.log \
     --pid-path=/var/run/nginx.pid \
     --lock-path=/var/run/nginx.lock \
     --http-client-body-temp-path=/var/cache/nginx/client_temp \
@@ -156,8 +156,8 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && apk add --no-cache tzdata \
   \
   # forward request and error logs to docker log collector
-  && ln -sf /dev/stdout /var/log/nginx/access.log \
-  && ln -sf /dev/stderr /var/log/nginx/error.log
+  && ln -sf /dev/stdout /data/logs/nginx/access.log \
+  && ln -sf /dev/stderr /data/logs/nginx/error.log
 
 RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
     echo /etc/apk/respositories && \
@@ -229,7 +229,8 @@ RUN mkdir -p /etc/nginx/include/ && \
     mkdir -p /etc/nginx/ssl/ && \
     rm -Rf /var/www/* && \
     mkdir -p /data/project/www/ && \
-    mkdir -p /data/logs/
+    mkdir -p /data/logs/nginx/ && \
+    mkdir -p /data/logs/supervisor/
 
 ADD conf/nginx/include/ /etc/nginx/include/
 ADD conf/www/ /data/project/www/
@@ -255,7 +256,8 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
         -e "s/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g" \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf} && \
-    ln -sf /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+    ln -sf /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
+    cd /usr/local/etc/php-fpm.d/ && ls /usr/local/etc/php-fpm.d/ | grep -v www | xargs rm -rf
 
 # Add Scripts
 ADD scripts/start.sh /start.sh
