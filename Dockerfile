@@ -191,6 +191,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     linux-headers \
     libmcrypt-dev \
     libpng-dev \
+    libwebp-dev \
     icu-dev \
     libpq \
     libxslt-dev \
@@ -201,6 +202,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     postgresql-dev && \
     docker-php-ext-configure gd \
       --with-gd \
+      --with-webp-dir=/usr/include/
       --with-freetype-dir=/usr/include/ \
       --with-png-dir=/usr/include/ \
       --with-jpeg-dir=/usr/include/ && \
@@ -219,6 +221,18 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     rm composer-setup.php && \
     pip install -U pip && \
     apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev make autoconf
+
+#install grpc
+RUN pecl install grpc
+#install protoc
+RUN mkdir -p /tmp/protoc && \
+    curl -L https://github.com/protocolbuffers/protobuf/releases/download/v3.2.0/protoc-3.2.0-linux-x86_64.zip > /tmp/protoc/protoc.zip && \
+    cd /tmp/protoc && \
+    unzip protoc.zip && \
+    cp /tmp/protoc/bin/protoc /usr/local/bin && \
+    cd /tmp && \
+    rm -r /tmp/protoc && \
+    docker-php-ext-enable grpc
 
 ADD conf/supervisord.conf /etc/supervisord.conf
 
