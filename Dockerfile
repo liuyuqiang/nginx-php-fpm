@@ -34,11 +34,11 @@ RUN set -ex \
     && wget -c https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.gz \
         -O - | tar xzf - \
     \
-    && cd LuaJIT-${LUAJIT_VERSION} \
+    && cd luajit2-${LUAJIT_VERSION} \
     && make -j"$(nproc)" \
     && make install INSTALL_INC=/usr/include/ \
     && cd .. \
-    && rm -rf LuaJIT-${LUAJIT_VERSION} \
+    && rm -rf luajit2-${LUAJIT_VERSION} \
     && cd /usr/bin \
     && ln -sf luajit-${LUAJIT_VERSION} lua \
     && cd /usr/lib \
