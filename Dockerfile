@@ -9,6 +9,7 @@ ENV php_vars /usr/local/etc/php/conf.d/docker-vars.ini
 ENV NGINX_VERSION 1.14.2
 ENV LUA_MODULE_VERSION 0.10.14
 ENV DEVEL_KIT_MODULE_VERSION 0.3.0
+ENV LUAJIT_VERSION=2.1-20190329
 ENV LUAJIT_LIB=/usr/lib
 ENV LUAJIT_INC=/usr/include/luajit-2.1
 
@@ -17,6 +18,33 @@ ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv
 RUN apk add --no-cache tcpdump tcpflow nload tshark net-tools iperf iotop sysstat strace ltrace tree readline screen
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz
+
+RUN set -ex \
+    \
+    && apk add --no-cache \
+        libgcc \
+    \
+    && apk add --no-cache --virtual .build-deps \
+        ca-certificates \
+        openssl \
+        make \
+        gcc \
+        libc-dev \
+    \
+    && wget -c https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.gz \
+        -O - | tar xzf - \
+    \
+    && cd LuaJIT-${LUAJIT_VERSION} \
+    && make -j"$(nproc)" \
+    && make install INSTALL_INC=/usr/include/ \
+    && cd .. \
+    && rm -rf LuaJIT-${LUAJIT_VERSION} \
+    && cd /usr/bin \
+    && ln -sf luajit-${LUAJIT_VERSION} lua \
+    && cd /usr/lib \
+    && find libluajit*.so | xargs -I {} ln -sf {} {}.2 \
+    \
+    && apk del .build-deps
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && CONFIG="\
@@ -84,7 +112,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     gd-dev \
     geoip-dev \
     perl-dev \
-    luajit-dev \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
   && curl -fSL https://github.com/simpl/ngx_devel_kit/archive/v$DEVEL_KIT_MODULE_VERSION.tar.gz -o ndk.tar.gz \
@@ -279,7 +306,9 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
 ADD scripts/start.sh /start.sh
 RUN chmod 755 /start.sh
 
-EXPOSE 443 80
+ENV LANG C.UTF-8
+EXPOSE 80 443
+STOPSIGNAL SIGTERM
 
 WORKDIR "/data/project/www/"
 
