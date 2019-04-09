@@ -15,12 +15,6 @@ ENV LUAJIT_INC=/usr/include/luajit-2.1
 
 WORKDIR "/tmp/"
 
-# resolves #166
-ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv
-RUN apk add --no-cache tcpdump tcpflow nload tshark net-tools iperf iotop sysstat strace ltrace tree readline screen
-RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz
-
 RUN set -ex \
     \
     && apk add --no-cache \
@@ -33,8 +27,7 @@ RUN set -ex \
         gcc \
         libc-dev \
     \
-    && wget -c https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.gz \
-        -O - | tar xzf - \
+    && curl -fSL https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.gz | tar xzf - \
     \
     && cd luajit2-${LUAJIT_VERSION} \
     && make -j"$(nproc)" \
@@ -47,6 +40,11 @@ RUN set -ex \
     && find libluajit*.so | xargs -I {} ln -sf {} {}.2 \
     \
     && apk del .build-deps
+
+# resolves #166
+ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv tcpdump tcpflow nload tshark bind-tools net-tools iperf iotop sysstat strace ltrace tree readline screen
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && CONFIG="\
