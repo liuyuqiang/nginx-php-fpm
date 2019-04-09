@@ -39,24 +39,24 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 ```
 git clone https://github.com/liuyuqiang/nginx-php-fpm
 cd nginx-php-fpm/
-docker build -t nginx-php-fpm:latest .
+docker build -t nginx-php-fpm:v1.0.1 .
 ```
 
 ### Pulling
 
 ```
-docker pull liuyuqiang/nginx-php-fpm:latest
+docker pull liuyuqiang/nginx-php-fpm:v1.0.1
 ```
 
 ### Running
 
 daemon mode
 ```
-docker run --name="nginx-php-fpm" -d nginx-php-fpm
+docker run --name="nginx-php-fpm" -d liuyuqiang/nginx-php-fpm:v1.0.1
 ```
 clean up mode
 ```
-docker run --name="nginx-php-fpm" --rm nginx-php-fpm
+docker run --name="nginx-php-fpm" --rm liuyuqiang/nginx-php-fpm:v1.0.1
 ```
 
 ### docker exec

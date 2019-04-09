@@ -36,7 +36,7 @@
 ```
 /usr/bin/supervisord
 /etc/supervisord.conf
-/etc/supervisor/conf.d/*.conf
+/data/project/supervisor/conf.d/*.conf
 /data/logs/supervisor/supervisord.log
 ```
 

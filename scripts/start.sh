@@ -52,5 +52,6 @@ else
 fi
 
 # Start supervisord and services
+mkdir -p /data/project/supervisor/conf.d/
 exec /usr/bin/supervisord -n -c /etc/supervisord.conf
 
