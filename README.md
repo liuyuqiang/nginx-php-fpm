@@ -39,12 +39,13 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 ```
 git clone https://github.com/liuyuqiang/nginx-php-fpm
 cd nginx-php-fpm/
-docker build -t nginx-php-fpm:v1.0.1 .
+docker build -t nginx-php-fpm:v1.0.3 .
 ```
 
 ### Pulling
 
 ```
+docker login --username=<docker username> --password=
 docker pull liuyuqiang/nginx-php-fpm:v1.0.1
 ```
 
@@ -52,11 +53,11 @@ docker pull liuyuqiang/nginx-php-fpm:v1.0.1
 
 daemon mode
 ```
-docker run --name="nginx-php-fpm" -d liuyuqiang/nginx-php-fpm:v1.0.1
+docker run --name="nginx-php-fpm" -d liuyuqiang/nginx-php-fpm:v1.0.3
 ```
 clean up mode
 ```
-docker run --name="nginx-php-fpm" --rm liuyuqiang/nginx-php-fpm:v1.0.1
+docker run --name="nginx-php-fpm" --rm liuyuqiang/nginx-php-fpm:v1.0.3
 ```
 
 ### docker exec
