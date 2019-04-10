@@ -16,34 +16,23 @@ ENV LUAJIT_INC=/usr/include/luajit-2.1
 WORKDIR "/tmp/"
 
 RUN set -ex \
-    \
-    && apk add --no-cache \
-        libgcc \
-    \
-    && apk add --no-cache --virtual .build-deps \
-        ca-certificates \
-        openssl \
-        make \
-        gcc \
-        libc-dev \
-    \
+    && apk add --no-cache libgcc  \
+    && apk add --no-cache --virtual .build-deps  ca-certificates libressl  make  gcc  libc-dev \
     && curl -fSL https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.gz | tar xzf - \
-    \
     && cd luajit2-${LUAJIT_VERSION} \
-    && make -j"$(nproc)" \
-    && make install INSTALL_INC=/usr/include/ \
+    && make -j"$(nproc)" PREFIX=/usr \
+    && make install PREFIX=/usr \
     && cd .. \
     && rm -rf luajit2-${LUAJIT_VERSION} \
-    && cd /usr/bin \
-    && ln -sf luajit-${LUAJIT_VERSION} lua \
-    && cd /usr/lib \
-    && find libluajit*.so | xargs -I {} ln -sf {} {}.2 \
-    \
+    && ln -sf /usr/bin/luajit /usr/bin/lua \
     && apk del .build-deps
 
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv tcpdump tcpflow nload tshark bind-tools net-tools iperf iotop sysstat strace ltrace tree readline screen
+
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv tcpdump tcpflow nload tshark bind-tools net-tools iperf iotop sysstat strace ltrace tree readline screen \
+  # Bring in tzdata so users could set the timezones through the environment variables
+  && apk add --no-cache tzdata vim
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
@@ -97,7 +86,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     --add-module=/usr/src/lua-nginx-module-$LUA_MODULE_VERSION \
   " \
   && addgroup -S nginx \
-  && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \ 
+  && adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
   && apk add --no-cache --virtual .build-deps \
     autoconf \
     gcc \
@@ -113,6 +102,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     gd-dev \
     geoip-dev \
     perl-dev \
+  #  luajit-dev \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
   && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
   && curl -fSL https://github.com/simpl/ngx_devel_kit/archive/v$DEVEL_KIT_MODULE_VERSION.tar.gz -o ndk.tar.gz \
@@ -172,18 +162,16 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && mv /usr/bin/envsubst /tmp/ \
   \
   && runDeps="$( \
-    scanelf --needed --nobanner --format '%n#p' /usr/sbin/nginx /usr/lib/nginx/modules/*.so /tmp/envsubst \
-      | tr ',' '\n' \
+    scanelf --needed --nobanner /usr/sbin/nginx /usr/lib/nginx/modules/*.so /tmp/envsubst \
+      | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
       | sort -u \
-      | awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+      | xargs -r apk info --installed \
+      | sort -u \
   )" \
   && apk add --no-cache --virtual .nginx-rundeps $runDeps \
   && apk del .build-deps \
   && apk del .gettext \
   && mv /tmp/envsubst /usr/local/bin/ \
-  # Bring in tzdata so users could set the timezones through the environment
-  # variables
-  && apk add --no-cache tzdata \
   \
   # forward request and error logs to docker log collector
   && ln -sf /dev/stdout /data/logs/nginx/access.log \
@@ -196,7 +184,6 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     bash \
     openssh-client \
     wget \
-    vim \
     supervisor \
     curl \
     libcurl \
@@ -215,11 +202,11 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     autoconf \
     make \
     gcc \
-    g++ \
     musl-dev \
     linux-headers \
     libmcrypt-dev \
     libpng-dev \
+    g++ \
     libwebp-dev \
     icu-dev \
     libpq \
