@@ -17,7 +17,7 @@ WORKDIR "/tmp/"
 
 RUN set -ex \
     && apk update && apk upgrade && apk add --no-cache libgcc  \
-    && apk update && apk upgrade && apk add --no-cache --virtual .build-deps  ca-certificates libressl  make  gcc  libc-dev \
+    && apk add --no-cache --virtual .build-deps  ca-certificates libressl  make  gcc  libc-dev \
     && curl -fSL https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.gz | tar xzf - \
     && cd luajit2-${LUAJIT_VERSION} \
     && make -j"$(nproc)" PREFIX=/usr \
@@ -31,7 +31,6 @@ RUN set -ex \
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 RUN echo @community http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories && \
     echo /etc/apk/respositories && \
-    apk update && apk upgrade &&\
     apk add --no-cache \
     gnu-libiconv iotop tshark
 
@@ -39,7 +38,6 @@ RUN apk add --no-cache tcpdump tcpflow nload iperf bind-tools net-tools sysstat 
 
 RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
     echo /etc/apk/respositories && \
-    apk update && apk upgrade &&\
     apk add --no-cache \
     lrzsz
 
