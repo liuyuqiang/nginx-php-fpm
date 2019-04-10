@@ -16,8 +16,8 @@ ENV LUAJIT_INC=/usr/include/luajit-2.1
 WORKDIR "/tmp/"
 
 RUN set -ex \
-    && apk add --no-cache libgcc  \
-    && apk add --no-cache --virtual .build-deps  ca-certificates libressl  make  gcc  libc-dev \
+    && apk update && apk upgrade && apk add --no-cache libgcc  \
+    && apk update && apk upgrade && apk add --no-cache --virtual .build-deps  ca-certificates libressl  make  gcc  libc-dev \
     && curl -fSL https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.gz | tar xzf - \
     && cd luajit2-${LUAJIT_VERSION} \
     && make -j"$(nproc)" PREFIX=/usr \
