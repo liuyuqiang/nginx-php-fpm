@@ -29,17 +29,9 @@ RUN set -ex \
 
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-RUN echo @community http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories && \
-    echo /etc/apk/respositories && \
-    apk add --no-cache \
-    gnu-libiconv iotop tshark
-
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv iotop tshark
 RUN apk add --no-cache tcpdump tcpflow nload iperf bind-tools net-tools sysstat strace ltrace tree readline screen tzdata vim
-
-RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
-    echo /etc/apk/respositories && \
-    apk add --no-cache \
-    lrzsz
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   && CONFIG="\
