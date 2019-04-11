@@ -4,7 +4,7 @@ cp /usr/share/zoneinfo/UTC /etc/localtime
 echo "UTC" > /etc/TZ
 
 #nginx setting
-chown -Rf nginx.nginx /data/project/www/
+chown -Rf nginx:nginx /data/project/www/
 
 #php setting
 sed -i '/php_flag\[display_errors\]/ d' /usr/local/etc/php-fpm.conf

@@ -13,8 +13,6 @@ ENV LUAJIT_VERSION 2.1-20190329
 ENV LUAJIT_LIB /usr/lib
 ENV LUAJIT_INC /usr/include/luajit-2.1
 
-WORKDIR "/tmp/"
-
 RUN set -ex \
     && apk update && apk upgrade && apk add --no-cache libgcc  \
     && apk add --no-cache --virtual .build-deps  ca-certificates libressl  make  gcc  libc-dev \
@@ -44,6 +42,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     --http-scgi-temp-path=/var/cache/nginx/scgi_temp \
     --user=nginx \
     --group=nginx \
+    --with-debug \
     --with-http_ssl_module \
     --with-http_realip_module \
     --with-http_addition_module \
