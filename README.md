@@ -14,12 +14,12 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 |-----|-------|
 | Docker | 18.09.4|
 | Alpine | 3.9 |
-| Git | 2.20.1(System) |
-| Nginx | 1.14.2 |
+| Git | 2.20.1 |
+| Nginx | 1.15.11 |
 | PHP  | 7.3.3 |
-| Python | 2.7.15(System) |
-| Supervisor | 3.3.4(System) |
-| Supervisor | 3.3.4(System) |
+| Python | 2.7.15 |
+| Supervisor | 3.3.4 |
+| Perl | v5.26.3 |
 | LuaJIT	|2.1-20190329(openresty/luajit2)|
 
 ### Docker Layout
