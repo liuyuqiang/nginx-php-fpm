@@ -258,7 +258,7 @@ RUN if [ "${ENABLE_PHP_EXTENSION_GRPC}" == "yes" ]; then \
 
 # Enable xdebug
 RUN if [ "${ENABLE_PHP_EXTENSION_XDEBUG}" == "yes" ]; then \
-      apk add --no-cache --virtual .xdebug-build-deps autoconf make gcc && \
+      apk add --no-cache --virtual .xdebug-build-deps autoconf g++ make gcc && \
       pecl channel-update pecl.php.net && \
       pecl install -o -f xdebug && \
       apk del .xdebug-build-deps && \
