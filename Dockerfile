@@ -244,13 +244,14 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
 
 # Install protoc & Enable grpc
 RUN if [ "${ENABLE_PHP_EXTENSION_GRPC}" == "yes" ]; then \
-      apk add --no-cache --virtual .php-grpc-build-deps gcc g++ zlib zlib-dev protobuf-dev linux-headers autoconf make protobuf && \
+      apk update && apk upgrade && \
+      apk add --no-cache --virtual .grpc-build-deps gcc autoconf make libc libc-dev g++ zlib zlib-dev linux-headers protobuf-dev protobuf && \
       pecl channel-update pecl.php.net && \
       pecl install -o -f protobuf && \
-      docker-php-ext-enable protobuf && \
       pecl install -o -f grpc && \
+      apk del .grpc-build-deps && \
+      docker-php-ext-enable protobuf && \
       docker-php-ext-enable grpc && \
-      apk del .php-grpc-build-deps && \
       echo "GRPC enabled"; \
     else \
       echo "GRPC skipping"; \
@@ -258,15 +259,18 @@ RUN if [ "${ENABLE_PHP_EXTENSION_GRPC}" == "yes" ]; then \
 
 # Enable xdebug
 RUN if [ "${ENABLE_PHP_EXTENSION_XDEBUG}" == "yes" ]; then \
+      apk update && apk upgrade && \
+      apk add --no-cache --virtual .xdebug-build-deps autoconf make gcc && \
       pecl channel-update pecl.php.net && \
       pecl install -o -f xdebug && \
+      apk del .xdebug-build-deps && \
       docker-php-ext-enable xdebug && \
       XdebugFile='/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini' && \
       echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > $XdebugFile && \
       echo "xdebug.remote_enable=1" >> $XdebugFile && \
       echo "xdebug.remote_autostart=false" >> $XdebugFile && \
       echo "remote_host=host.docker.internal" >> $XdebugFile && \
-      echo "xdebug.remote_log=/tmp/xdebug.log" >> $XdebugFile &&\
+      echo "xdebug.remote_log=/tmp/xdebug.log" >> $XdebugFile && \
       echo "XDebug enabled"; \
     else \
       echo "XDebug skipping"; \
