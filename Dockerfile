@@ -2,21 +2,21 @@ FROM php:7.3.3-fpm-alpine3.9
 
 LABEL maintainer="liuyuqiang <yuqiangliu@outlook.com>"
 
-ENV php_conf /usr/local/etc/php-fpm.conf
-ENV fpm_conf /usr/local/etc/php-fpm.d/www.conf
-ENV php_vars /usr/local/etc/php/conf.d/docker-vars.ini
-ENV php_default_vars /usr/local/etc/php/php.ini
-
-ENV NGINX_VERSION 1.15.11
-ENV LUA_MODULE_VERSION 0.10.14
-ENV DEVEL_KIT_MODULE_VERSION 0.3.0
-ENV LUAJIT_VERSION 2.1-20190329
-ENV LUAJIT_LIB /usr/lib
-ENV LUAJIT_INC /usr/include/luajit-2.1
+ENV LANG C.UTF-8 \
+    php_conf /usr/local/etc/php-fpm.conf \
+    fpm_conf /usr/local/etc/php-fpm.d/www.conf \
+    php_vars /usr/local/etc/php/conf.d/docker-vars.ini \
+    php_default_vars /usr/local/etc/php/php.ini \
+    NGINX_VERSION 1.15.11 \
+    LUA_MODULE_VERSION 0.10.14 \
+    DEVEL_KIT_MODULE_VERSION 0.3.0 \
+    LUAJIT_VERSION 2.1-20190329 \
+    LUAJIT_LIB /usr/lib \
+    LUAJIT_INC /usr/include/luajit-2.1
 
 #eanble php extesion optional [yes/no]
-ENV ENABLE_PHP_EXTENSION_XDEBUG yes
-ENV ENABLE_PHP_EXTENSION_GRPC yes
+ARG ENABLE_PHP_EXTENSION_XDEBUG=yes \
+ARG ENABLE_PHP_EXTENSION_GRPC=yes
 
 RUN set -ex \
     && apk update && apk upgrade && apk add --no-cache libgcc  \
@@ -335,7 +335,6 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
 ADD scripts/start.sh /start.sh
 RUN chmod 755 /start.sh
 
-ENV LANG C.UTF-8
 EXPOSE 80 443
 STOPSIGNAL SIGTERM
 
