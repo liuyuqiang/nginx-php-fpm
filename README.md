@@ -36,12 +36,25 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 
 ## Quick Start
 
-## Building
+### Building
 
 ```
 git clone https://github.com/liuyuqiang/nginx-php-fpm
 cd nginx-php-fpm/
 docker build -t nginx-php-fpm:v1.0.4 .
+```
+
+### Building custom args
+
+- enable php extension
+
+```
+ENABLE_PHP_EXTENSION_XDEBUG=yes // php xdebug default enable
+ENABLE_PHP_EXTENSION_GRPC=yes   // php grpc default enable
+```
+- usage
+```
+docker build -t nginx-php-fpm:v1.0.4 --build-arg ENABLE_PHP_EXTENSION_XDEBUG=no --build-arg ENABLE_PHP_EXTENSION_GRPC=yes --no-cache .
 ```
 
 ### Pulling

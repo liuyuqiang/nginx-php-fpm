@@ -14,9 +14,12 @@ ENV LANG C.UTF-8 \
     LUAJIT_LIB /usr/lib \
     LUAJIT_INC /usr/include/luajit-2.1
 
-#eanble php extesion optional [yes/no]
-ARG ENABLE_PHP_EXTENSION_XDEBUG=yes \
+#enable php extension optional [yes/no]
+ARG ENABLE_PHP_EXTENSION_XDEBUG=yes
 ARG ENABLE_PHP_EXTENSION_GRPC=yes
+
+RUN echo -n "enable php extension xdebug support:[yes/no]        " ; if [ "`echo "$ENABLE_PHP_EXTENSION_XDEBUG" | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then echo "Yes"; else echo "No" ; fi && \
+    echo -n "enable php extension grpc   support:[yes/no]        " ; if [ "`echo "$ENABLE_PHP_EXTENSION_GRPC" | tr '[:upper:]' '[:lower:]'`" == "yes" ];   then echo "Yes"; else echo "No" ; fi
 
 RUN set -ex \
     && apk update && apk upgrade && apk add --no-cache libgcc  \
@@ -247,7 +250,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev make autoconf libwebp-dev heimdal-dev
 
 # Install protoc & Enable grpc
-RUN if [ "${ENABLE_PHP_EXTENSION_GRPC}" == "yes" ]; then \
+RUN if [ "`echo "$ENABLE_PHP_EXTENSION_GRPC" | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then \
       apk add --no-cache --virtual .grpc-build-deps gcc autoconf make libc-dev g++ zlib zlib-dev linux-headers protobuf-dev protobuf && \
       pecl channel-update pecl.php.net && \
       pecl install -o -f protobuf && \
@@ -261,7 +264,7 @@ RUN if [ "${ENABLE_PHP_EXTENSION_GRPC}" == "yes" ]; then \
     fi
 
 # Enable xdebug
-RUN if [ "${ENABLE_PHP_EXTENSION_XDEBUG}" == "yes" ]; then \
+RUN if [ "`echo "$ENABLE_PHP_EXTENSION_XDEBUG" | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then \
       apk add --no-cache --virtual .xdebug-build-deps autoconf g++ make gcc && \
       pecl channel-update pecl.php.net && \
       pecl install -o -f xdebug && \
