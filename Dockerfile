@@ -5,6 +5,7 @@ LABEL maintainer="liuyuqiang <yuqiangliu@outlook.com>"
 ENV php_conf /usr/local/etc/php-fpm.conf
 ENV fpm_conf /usr/local/etc/php-fpm.d/www.conf
 ENV php_vars /usr/local/etc/php/conf.d/docker-vars.ini
+ENV php_default_vars /usr/local/etc/php/php.ini
 
 ENV NGINX_VERSION 1.15.11
 ENV LUA_MODULE_VERSION 0.10.14
@@ -169,17 +170,20 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
   # Bring in tzdata so users could set the timezones through the environment
   # variables
   && apk add --no-cache tzdata \
+  #setting timezone
+  && cp /usr/share/zoneinfo/UTC /etc/localtime \
+  && echo "UTC" > /etc/TZ \
   \
   # forward request and error logs to docker log collector
   && ln -sf /dev/stdout /data/logs/nginx/access.log \
   && ln -sf /dev/stderr /data/logs/nginx/error.log
+
 
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv iotop tshark
 RUN apk add --no-cache tcpdump tcpflow nload iperf bind-tools net-tools sysstat strace ltrace tree readline screen vim
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz
-
 
 RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
     echo /etc/apk/respositories && \
@@ -274,29 +278,36 @@ RUN if [ "${ENABLE_PHP_EXTENSION_XDEBUG}" == "yes" ]; then \
       echo "XDebug skipping"; \
     fi
 
-ADD conf/supervisord.conf /etc/supervisord.conf
-
-# Copy our nginx config
-RUN rm -Rf /etc/nginx/nginx.conf
-ADD conf/nginx.conf /etc/nginx/nginx.conf
-
-# nginx site conf
-RUN mkdir -p /etc/nginx/include/ && \
+#Create supervisor & nginx & logs & data dir
+RUN mkdir -p /data/project/supervisor/conf.d/ && \
+    mkdir -p /etc/nginx/include/ && \
     mkdir -p /etc/nginx/ssl/ && \
     rm -Rf /var/www/* && \
+    rm -Rf /etc/nginx/nginx.conf && \
     mkdir -p /data/project/www/ && \
     mkdir -p /data/logs/nginx/ && \
     mkdir -p /data/logs/supervisor/
 
+
+# Copy custom config
+ADD conf/nginx.conf /etc/nginx/nginx.conf
 ADD conf/nginx/include/ /etc/nginx/include/
 ADD conf/www/ /data/project/www/
+ADD conf/supervisord.conf /etc/supervisord.conf
 
-# tweak php-fpm config
+RUN chown -Rf nginx:nginx /data/project/www/
+
+#php-fpm config
 RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
     echo "upload_max_filesize = 100M"  >> ${php_vars} &&\
     echo "post_max_size = 100M"  >> ${php_vars} &&\
     echo "variables_order = \"EGPCS\""  >> ${php_vars} && \
     echo "memory_limit = 128M"  >> ${php_vars} && \
+    sed -i "s/expose_php = On/expose_php = Off/g" ${php_vars} && \
+    echo date.timezone=$(cat /etc/TZ) >> ${php_vars} && \
+    echo "display_errors = Off" >> ${php_vars} && \
+    echo "log_errors = On" >> ${php_vars} && \
+    echo "error_log = /dev/stderr" >> ${php_vars} && \
     sed -i \
         -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" \
         -e "s/pm.max_children = 5/pm.max_children = 4/g" \
@@ -312,7 +323,12 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
         -e "s/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g" \
         -e "s/^;clear_env = no$/clear_env = no/" \
         ${fpm_conf} && \
-    ln -sf /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini && \
+    ln -sf /usr/local/etc/php/php.ini-development ${php_default_vars} && \
+    sed -i "s/expose_php = On/expose_php = Off/g" ${php_default_vars} && \
+    sed -i "s/display_errors = On/display_errors = Off/g" ${php_default_vars} && \
+    sed -i "s/expose_php = On/expose_php = Off/g" ${php_default_vars} && \
+    sed -i '/php_flag\[display_errors\]/ d' ${php_conf} && \
+    sed -i '/php_flag\[display_errors\]/ d' ${fpm_conf} && \
     cd /usr/local/etc/php-fpm.d/ && ls /usr/local/etc/php-fpm.d/ | grep -v www | xargs rm -rf
 
 # Add Scripts
