@@ -13,6 +13,10 @@ ENV LUAJIT_VERSION 2.1-20190329
 ENV LUAJIT_LIB /usr/lib
 ENV LUAJIT_INC /usr/include/luajit-2.1
 
+#eanble php extesion optional [yes/no]
+ENV ENABLE_PHP_EXTENSION_XDEBUG yes
+ENV ENABLE_PHP_EXTENSION_GRPC yes
+
 RUN set -ex \
     && apk update && apk upgrade && apk add --no-cache libgcc  \
     && apk add --no-cache --virtual .build-deps  ca-certificates openssl make  gcc  libc-dev \
@@ -180,7 +184,7 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/test
 RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
     echo /etc/apk/respositories && \
     apk update && apk upgrade &&\
-    apk add --no-cache --virtual .php-build-deps  \
+    apk add --no-cache \
     bash \
     openssh-client \
     wget \
@@ -205,7 +209,6 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     linux-headers \
     libmcrypt-dev \
     libpng-dev \
-    g++ \
     libwebp-dev \
     icu-dev \
     libpq \
@@ -223,7 +226,6 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
       --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-install iconv pdo_mysql pdo_sqlite pgsql pdo_pgsql mysqli gd exif intl xsl json soap dom zip opcache bcmath pcntl && \
     pecl channel-update pecl.php.net && \
-    pecl install xdebug && \
     pecl install -o -f redis && \
     docker-php-ext-enable redis && \
     pecl install -o -f mongodb && \
@@ -238,20 +240,37 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer && \
     rm composer-setup.php && \
     pip install -U pip && \
-    apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev make autoconf g++ libwebp-dev heimdal-dev
+    apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev make autoconf libwebp-dev heimdal-dev
 
-#install protoc & grpc
-RUN mkdir -p /tmp/protoc && \
-    curl -L https://github.com/protocolbuffers/protobuf/releases/download/v3.2.0/protoc-3.2.0-linux-x86_64.zip > /tmp/protoc/protoc.zip && \
-    cd /tmp/protoc && \
-    unzip protoc.zip && \
-    cp /tmp/protoc/bin/protoc /usr/local/bin && \
-    cd /tmp && \
-    rm -r /tmp/protoc && \
-    pecl install -o -f 	protobuf && \
-    docker-php-ext-enable protobuf && \
-    pecl install -o -f grpc && \
-    docker-php-ext-enable grpc
+# Install protoc & Enable grpc
+RUN if [ "${ENABLE_PHP_EXTENSION_GRPC}" == "yes" ]; then \
+      apk add --no-cache --virtual .php-grpc-build-deps gcc g++ zlib zlib-dev protobuf-dev linux-headers autoconf make protobuf && \
+      pecl channel-update pecl.php.net && \
+      pecl install -o -f protobuf && \
+      docker-php-ext-enable protobuf && \
+      pecl install -o -f grpc && \
+      docker-php-ext-enable grpc && \
+      apk del .php-grpc-build-deps && \
+      echo "GRPC enabled"; \
+    else \
+      echo "GRPC skipping"; \
+    fi
+
+# Enable xdebug
+RUN if [ "${ENABLE_PHP_EXTENSION_XDEBUG}" == "yes" ]; then \
+      pecl channel-update pecl.php.net && \
+      pecl install -o -f xdebug && \
+      docker-php-ext-enable xdebug && \
+      XdebugFile='/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini' && \
+      echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > $XdebugFile && \
+      echo "xdebug.remote_enable=1" >> $XdebugFile && \
+      echo "xdebug.remote_autostart=false" >> $XdebugFile && \
+      echo "remote_host=host.docker.internal" >> $XdebugFile && \
+      echo "xdebug.remote_log=/tmp/xdebug.log" >> $XdebugFile &&\
+      echo "XDebug enabled"; \
+    else \
+      echo "XDebug skipping"; \
+    fi
 
 ADD conf/supervisord.conf /etc/supervisord.conf
 
