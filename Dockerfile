@@ -15,7 +15,7 @@ ENV LUAJIT_INC /usr/include/luajit-2.1
 
 RUN set -ex \
     && apk update && apk upgrade && apk add --no-cache libgcc  \
-    && apk add --no-cache --virtual .build-deps  ca-certificates libressl  make  gcc  libc-dev \
+    && apk add --no-cache --virtual .build-deps  ca-certificates openssl make  gcc  libc-dev \
     && curl -fSL https://github.com/openresty/luajit2/archive/v${LUAJIT_VERSION}.tar.gz | tar xzf - \
     && cd luajit2-${LUAJIT_VERSION} \
     && make -j"$(nproc)" PREFIX=/usr \
@@ -82,7 +82,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     gcc \
     libc-dev \
     make \
-    libressl-dev \
+	openssl-dev \
     pcre-dev \
     zlib-dev \
     linux-headers \
@@ -194,7 +194,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     python-dev \
     py-pip \
     augeas-dev \
-    libressl-dev \
+    openssl-dev \
     ca-certificates \
     dialog \
     autoconf \
