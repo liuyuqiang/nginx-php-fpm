@@ -244,8 +244,7 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
 
 # Install protoc & Enable grpc
 RUN if [ "${ENABLE_PHP_EXTENSION_GRPC}" == "yes" ]; then \
-      apk update && apk upgrade && \
-      apk add --no-cache --virtual .grpc-build-deps gcc autoconf make libc libc-dev g++ zlib zlib-dev linux-headers protobuf-dev protobuf && \
+      apk add --no-cache --virtual .grpc-build-deps gcc autoconf make libc-dev g++ zlib zlib-dev linux-headers protobuf-dev protobuf && \
       pecl channel-update pecl.php.net && \
       pecl install -o -f protobuf && \
       pecl install -o -f grpc && \
@@ -259,7 +258,6 @@ RUN if [ "${ENABLE_PHP_EXTENSION_GRPC}" == "yes" ]; then \
 
 # Enable xdebug
 RUN if [ "${ENABLE_PHP_EXTENSION_XDEBUG}" == "yes" ]; then \
-      apk update && apk upgrade && \
       apk add --no-cache --virtual .xdebug-build-deps autoconf make gcc && \
       pecl channel-update pecl.php.net && \
       pecl install -o -f xdebug && \
