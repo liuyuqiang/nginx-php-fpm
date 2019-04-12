@@ -22,6 +22,7 @@ intl
 json
 libxml
 mbstring
+mongodb
 mysqli
 mysqlnd
 openssl
@@ -34,6 +35,7 @@ pdo_sqlite
 pgsql
 Phar
 posix
+protobuf
 readline
 redis
 Reflection
@@ -45,6 +47,7 @@ SPL
 sqlite3
 standard
 tokenizer
+xdebug
 xml
 xmlreader
 xmlwriter
@@ -54,5 +57,7 @@ zip
 zlib
 
 [Zend Modules]
+Xdebug
 Zend OPcache
+
 ```
