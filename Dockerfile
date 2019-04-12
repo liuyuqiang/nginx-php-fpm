@@ -2,17 +2,17 @@ FROM php:7.3.3-fpm-alpine3.9
 
 LABEL maintainer="liuyuqiang <yuqiangliu@outlook.com>"
 
-ENV LANG C.UTF-8 \
-    php_conf /usr/local/etc/php-fpm.conf \
-    fpm_conf /usr/local/etc/php-fpm.d/www.conf \
-    php_vars /usr/local/etc/php/conf.d/docker-vars.ini \
-    php_default_vars /usr/local/etc/php/php.ini \
-    NGINX_VERSION 1.15.11 \
-    LUA_MODULE_VERSION 0.10.14 \
-    DEVEL_KIT_MODULE_VERSION 0.3.0 \
-    LUAJIT_VERSION 2.1-20190329 \
-    LUAJIT_LIB /usr/lib \
-    LUAJIT_INC /usr/include/luajit-2.1
+ENV LANG=C.UTF-8 \
+    php_conf=/usr/local/etc/php-fpm.conf \
+    fpm_conf=/usr/local/etc/php-fpm.d/www.conf \
+    php_vars=/usr/local/etc/php/conf.d/docker-vars.ini \
+    php_default_vars=/usr/local/etc/php/php.ini \
+    NGINX_VERSION=1.15.11 \
+    LUA_MODULE_VERSION=0.10.14 \
+    DEVEL_KIT_MODULE_VERSION=0.3.0 \
+    LUAJIT_VERSION=2.1-20190329 \
+    LUAJIT_LIB=/usr/lib \
+    LUAJIT_INC=/usr/include/luajit-2.1
 
 #enable php extension optional [yes/no]
 ARG ENABLE_PHP_EXTENSION_XDEBUG=yes
