@@ -176,10 +176,11 @@ RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/comm
 RUN apk add --no-cache tcpdump tcpflow nload iperf bind-tools net-tools sysstat strace ltrace tree readline screen vim
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz
 
+
 RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
     echo /etc/apk/respositories && \
     apk update && apk upgrade &&\
-    apk add --no-cache \
+    apk add --no-cache --virtual .php-build-deps  \
     bash \
     openssh-client \
     wget \
@@ -189,12 +190,12 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     libzip-dev \
     bzip2-dev \
     imap-dev \
+    openssl-dev \
     git \
     python \
     python-dev \
     py-pip \
     augeas-dev \
-    openssl-dev \
     ca-certificates \
     dialog \
     autoconf \
@@ -221,11 +222,13 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
       --with-png-dir=/usr/include/ \
       --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-install iconv pdo_mysql pdo_sqlite pgsql pdo_pgsql mysqli gd exif intl xsl json soap dom zip opcache bcmath pcntl && \
-    pecl install grpc && \
-    pecl install xdebug-2.7.0RC1 && \
+    pecl channel-update pecl.php.net && \
+    pecl install xdebug && \
     pecl install -o -f redis && \
-    echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini && \
-    pecl install apcu-5.1.17 && \
+    docker-php-ext-enable redis && \
+    pecl install -o -f mongodb && \
+    docker-php-ext-enable mongodb && \
+    pecl install apcu && \
     docker-php-ext-enable apcu && \
     docker-php-source delete && \
     mkdir -p /etc/nginx && \
@@ -235,9 +238,9 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer && \
     rm composer-setup.php && \
     pip install -U pip && \
-    apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev make autoconf
+    apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev make autoconf g++ libwebp-dev heimdal-dev
 
-#install protoc
+#install protoc & grpc
 RUN mkdir -p /tmp/protoc && \
     curl -L https://github.com/protocolbuffers/protobuf/releases/download/v3.2.0/protoc-3.2.0-linux-x86_64.zip > /tmp/protoc/protoc.zip && \
     cd /tmp/protoc && \
@@ -245,6 +248,9 @@ RUN mkdir -p /tmp/protoc && \
     cp /tmp/protoc/bin/protoc /usr/local/bin && \
     cd /tmp && \
     rm -r /tmp/protoc && \
+    pecl install -o -f 	protobuf && \
+    docker-php-ext-enable protobuf && \
+    pecl install -o -f grpc && \
     docker-php-ext-enable grpc
 
 ADD conf/supervisord.conf /etc/supervisord.conf
