@@ -181,9 +181,9 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv iotop tshark
-RUN apk add --no-cache tcpdump tcpflow nload iperf bind-tools net-tools sysstat strace ltrace tree readline screen vim
-RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv iotop tshark && \
+    apk add --no-cache tcpdump tcpflow nload iperf bind-tools net-tools sysstat strace ltrace tree readline screen vim && \
+    apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz
 
 RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
     echo /etc/apk/respositories && \
@@ -294,8 +294,7 @@ ADD conf/nginx.conf /etc/nginx/nginx.conf
 ADD conf/nginx/include/ /etc/nginx/include/
 ADD conf/www/ /data/project/www/
 ADD conf/supervisord.conf /etc/supervisord.conf
-
-RUN chown -Rf nginx:nginx /data/project/www/
+ADD scripts/start.sh /start.sh
 
 #php-fpm config
 RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
@@ -331,11 +330,11 @@ RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
     sed -i '/php_flag\[display_errors\]/ d' ${fpm_conf} && \
     cd /usr/local/etc/php-fpm.d/ && ls /usr/local/etc/php-fpm.d/ | grep -v www | xargs rm -rf
 
-# Add Scripts
-ADD scripts/start.sh /start.sh
-RUN chmod 755 /start.sh
+RUN chown -Rf nginx:nginx /data/project/www/ && \
+    chmod 755 /start.sh
 
 EXPOSE 80 443
+
 STOPSIGNAL SIGTERM
 
 WORKDIR "/data/project/www/"
