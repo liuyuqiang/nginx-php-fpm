@@ -46,13 +46,17 @@ docker build -t nginx-php-fpm:v1.0.4 .
 
 ### Building custom args
 
-- enable php extension
+- default enable php extension
 
 ```
-ENABLE_PHP_EXTENSION_XDEBUG=yes // php xdebug default enable
-ENABLE_PHP_EXTENSION_GRPC=yes   // php grpc default enable
+ARG ENABLE_PHP_EXTENSION_XDEBUG=yes
+ARG ENABLE_PHP_EXTENSION_GRPC=yes
+ARG ENABLE_PHP_EXTENSION_SWOOLE=yes
+ARG ENABLE_PHP_EXTENSION_YAF=yes
+ARG ENABLE_PHP_EXTENSION_YAR=yes
 ```
-- usage
+- example
+
 ```
 docker build -t nginx-php-fpm:v1.0.4 --build-arg ENABLE_PHP_EXTENSION_XDEBUG=no --build-arg ENABLE_PHP_EXTENSION_GRPC=yes --no-cache .
 ```
