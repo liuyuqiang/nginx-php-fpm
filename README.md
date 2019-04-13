@@ -28,7 +28,12 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 
 ### PHP Extensions
 
-- [PHP Extensions](https://github.com/liuyuqiang/nginx-php-fpm/blob/master/docs/php_extensions.md)
+- main extension
+
+```
+apcu bcmath pcntl openssl redis mongo xdebug protobuf grpc yaf yar swoole soap
+```
+- [PHP Extensions detail](https://github.com/liuyuqiang/nginx-php-fpm/blob/master/docs/php_extensions.md)
 
 ### Links
 
@@ -41,7 +46,7 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 ```
 git clone https://github.com/liuyuqiang/nginx-php-fpm
 cd nginx-php-fpm/
-docker build -t nginx-php-fpm:v1.0.4 .
+docker build -t nginx-php-fpm:v1.0.6 .
 ```
 
 ### Building custom args
@@ -58,25 +63,25 @@ ARG ENABLE_PHP_EXTENSION_YAR=yes
 - example
 
 ```
-docker build -t nginx-php-fpm:v1.0.4 --build-arg ENABLE_PHP_EXTENSION_XDEBUG=no --build-arg ENABLE_PHP_EXTENSION_GRPC=yes --no-cache .
+docker build -t nginx-php-fpm:v1.0.6 --build-arg ENABLE_PHP_EXTENSION_XDEBUG=no --build-arg ENABLE_PHP_EXTENSION_GRPC=yes --no-cache .
 ```
 
 ### Pulling
 
 ```
 docker login --username=<docker username> --password=
-docker pull liuyuqiang/nginx-php-fpm:v1.0.4
+docker pull liuyuqiang/nginx-php-fpm:v1.0.6
 ```
 
 ### Running
 
 daemon mode
 ```
-docker run --name="nginx-php-fpm" -d liuyuqiang/nginx-php-fpm:v1.0.4
+docker run --name="nginx-php-fpm" -d liuyuqiang/nginx-php-fpm:v1.0.6
 ```
 clean up mode
 ```
-docker run --name="nginx-php-fpm" --rm liuyuqiang/nginx-php-fpm:v1.0.4
+docker run --name="nginx-php-fpm" --rm liuyuqiang/nginx-php-fpm:v1.0.6
 ```
 
 ### docker exec
