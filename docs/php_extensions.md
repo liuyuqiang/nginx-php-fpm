@@ -1,7 +1,7 @@
 ## PHP Extensions 
 ```
-php -m
 
+php -m
 [PHP Modules]
 apcu
 bcmath
@@ -46,12 +46,15 @@ sodium
 SPL
 sqlite3
 standard
+swoole
 tokenizer
 xdebug
 xml
 xmlreader
 xmlwriter
 xsl
+yaf
+yar
 Zend OPcache
 zip
 zlib

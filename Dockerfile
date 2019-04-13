@@ -17,9 +17,15 @@ ENV LANG=C.UTF-8 \
 #enable php extension optional [yes/no]
 ARG ENABLE_PHP_EXTENSION_XDEBUG=yes
 ARG ENABLE_PHP_EXTENSION_GRPC=yes
+ARG ENABLE_PHP_EXTENSION_SWOOLE=yes
+ARG ENABLE_PHP_EXTENSION_YAF=yes
+ARG ENABLE_PHP_EXTENSION_YAR=yes
 
 RUN echo -n "enable php extension xdebug support:[yes/no]        " ; if [ "`echo "$ENABLE_PHP_EXTENSION_XDEBUG" | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then echo "Yes"; else echo "No" ; fi && \
-    echo -n "enable php extension grpc   support:[yes/no]        " ; if [ "`echo "$ENABLE_PHP_EXTENSION_GRPC" | tr '[:upper:]' '[:lower:]'`" == "yes" ];   then echo "Yes"; else echo "No" ; fi
+    echo -n "enable php extension grpc   support:[yes/no]        " ; if [ "`echo "$ENABLE_PHP_EXTENSION_GRPC"   | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then echo "Yes"; else echo "No" ; fi && \
+    echo -n "enable php extension swoole support:[yes/no]        " ; if [ "`echo "$ENABLE_PHP_EXTENSION_SWOOLE" | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then echo "Yes"; else echo "No" ; fi && \
+    echo -n "enable php extension yaf    support:[yes/no]        " ; if [ "`echo "$ENABLE_PHP_EXTENSION_YAF"    | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then echo "Yes"; else echo "No" ; fi && \
+    echo -n "enable php extension yar    support:[yes/no]        " ; if [ "`echo "$ENABLE_PHP_EXTENSION_YAR"    | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then echo "Yes"; else echo "No" ; fi
 
 RUN set -ex \
     && apk update && apk upgrade && apk add --no-cache libgcc  \
@@ -279,6 +285,53 @@ RUN if [ "`echo "$ENABLE_PHP_EXTENSION_XDEBUG" | tr '[:upper:]' '[:lower:]'`" ==
       echo "XDebug enabled"; \
     else \
       echo "XDebug skipping"; \
+    fi
+
+# Enable swoole
+RUN if [ "`echo "$ENABLE_PHP_EXTENSION_SWOOLE" | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then \
+      apk add --no-cache --virtual .swoole-build-deps autoconf g++ make gcc && \
+      pecl channel-update pecl.php.net && \
+      yes | pecl install -o -f swoole && \
+      apk del .swoole-build-deps && \
+      docker-php-ext-enable swoole && \
+      SwooleFile='/usr/local/etc/php/conf.d/docker-php-ext-swoole.ini' && \
+      echo "[swoole]" > $SwooleFile && \
+      echo "extension=$(find /usr/local/lib/php/extensions/ -name swoole.so)" >> $SwooleFile && \
+      echo "Swoole enabled"; \
+    else \
+      echo "Swoole skipping"; \
+    fi
+
+# Enable yaf
+RUN if [ "`echo "$ENABLE_PHP_EXTENSION_YAF" | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then \
+      apk add --no-cache --virtual .yaf-build-deps autoconf g++ make gcc && \
+      pecl channel-update pecl.php.net && \
+      pecl install -o -f yaf && \
+      apk del .yaf-build-deps && \
+      docker-php-ext-enable yaf && \
+      YafFile='/usr/local/etc/php/conf.d/docker-php-ext-yaf.ini' && \
+      echo "[Yaf]" > $YafFile && \
+      echo "extension=$(find /usr/local/lib/php/extensions/ -name yaf.so)" >> $YafFile && \
+      echo "yaf.environ=product" >> $YafFile && \
+      echo "Yaf enabled"; \
+    else \
+      echo "Yaf skipping"; \
+    fi
+
+# Enable yar
+RUN if [ "`echo "$ENABLE_PHP_EXTENSION_YAR" | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then \
+      apk add --no-cache --virtual .yar-build-deps autoconf g++ make gcc curl curl-dev libcurl && \
+      pecl channel-update pecl.php.net && \
+      echo no | pecl install -o -f yar && \
+      apk del .yar-build-deps && \
+      docker-php-ext-enable yar && \
+      YarFile='/usr/local/etc/php/conf.d/docker-php-ext-yar.ini' && \
+      echo "[Yar]" > $YarFile && \
+      echo "extension=$(find /usr/local/lib/php/extensions/ -name yar.so)" >> $YarFile && \
+      echo "yar.expose_info=Off" >> $YarFile && \
+      echo "Yar enabled"; \
+    else \
+      echo "Yar skipping"; \
     fi
 
 #Create supervisor & nginx & logs & data dir
