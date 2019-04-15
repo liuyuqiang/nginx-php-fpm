@@ -342,7 +342,8 @@ RUN mkdir -p /data/project/supervisor/conf.d/ && \
     rm -Rf /etc/nginx/nginx.conf && \
     mkdir -p /data/project/www/ && \
     mkdir -p /data/logs/nginx/ && \
-    mkdir -p /data/logs/supervisor/
+    mkdir -p /data/logs/supervisor/ && \
+    ln -sf /dev/stdout /data/logs/supervisor/supervisord.log
 
 
 # Copy custom config
