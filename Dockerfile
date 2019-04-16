@@ -3,10 +3,6 @@ FROM php:7.3.4-fpm-alpine3.9
 LABEL maintainer="liuyuqiang <yuqiangliu@outlook.com>"
 
 ENV LANG=C.UTF-8 \
-    php_conf=/usr/local/etc/php-fpm.conf \
-    fpm_conf=/usr/local/etc/php-fpm.d/www.conf \
-    php_vars=/usr/local/etc/php/conf.d/docker-vars.ini \
-    php_default_vars=/usr/local/etc/php/php.ini \
     NGINX_VERSION=1.15.11 \
     LUA_MODULE_VERSION=0.10.14 \
     DEVEL_KIT_MODULE_VERSION=0.3.0 \
@@ -340,56 +336,26 @@ RUN if [ "`echo "$ENABLE_PHP_EXTENSION_YAR" | tr '[:upper:]' '[:lower:]'`" == "y
 RUN mkdir -p /data/project/supervisor/conf.d/ && \
     mkdir -p /etc/nginx/include/ && \
     mkdir -p /etc/nginx/ssl/ && \
-    rm -Rf /var/www/* && \
-    rm -Rf /etc/nginx/nginx.conf && \
     mkdir -p /data/project/www/ && \
     mkdir -p /data/logs/nginx/ && \
     mkdir -p /data/logs/supervisor/ && \
-    ln -sf /dev/stdout /data/logs/supervisor/supervisord.log
+    ln -sf /dev/stdout /data/logs/supervisor/supervisord.log && \
+    rm -Rf /var/www/* && \
+    rm -Rf /etc/nginx/nginx.conf && \
+    # php-fpm config
+    # cd /usr/local/etc/php-fpm.d/ && ls /usr/local/etc/php-fpm.d/ | grep -v www | xargs rm -rf
 
 # Copy custom config
 ADD conf/nginx.conf /etc/nginx/nginx.conf
 ADD conf/nginx/include/ /etc/nginx/include/
 ADD conf/www/ /data/project/www/
 ADD conf/supervisord.conf /etc/supervisord.conf
-ADD scripts/start.sh /start.sh
+ADD conf/php/php.ini /usr/local/etc/php/php.ini
+ADD conf/php/conf.d/ /usr/local/etc/php/conf.d/
+ADD conf/php/php-fpm.conf /usr/local/etc/php-fpm.conf
+ADD conf/php/php-fpm.d/ /usr/local/etc/php-fpm.d/
 
-#php-fpm config
-RUN echo "cgi.fix_pathinfo=0" > ${php_vars} &&\
-    echo "upload_max_filesize = 100M"  >> ${php_vars} &&\
-    echo "post_max_size = 100M"  >> ${php_vars} &&\
-    echo "variables_order = \"EGPCS\""  >> ${php_vars} && \
-    echo "memory_limit = 128M"  >> ${php_vars} && \
-    sed -i "s/expose_php = On/expose_php = Off/g" ${php_vars} && \
-    echo date.timezone=$(cat /etc/TZ) >> ${php_vars} && \
-    echo "display_errors = Off" >> ${php_vars} && \
-    echo "log_errors = On" >> ${php_vars} && \
-    echo "error_log = /dev/stderr" >> ${php_vars} && \
-    sed -i \
-        -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" \
-        -e "s/pm.max_children = 5/pm.max_children = 4/g" \
-        -e "s/pm.start_servers = 2/pm.start_servers = 3/g" \
-        -e "s/pm.min_spare_servers = 1/pm.min_spare_servers = 2/g" \
-        -e "s/pm.max_spare_servers = 3/pm.max_spare_servers = 4/g" \
-        -e "s/;pm.max_requests = 500/pm.max_requests = 200/g" \
-        -e "s/user = www-data/user = nginx/g" \
-        -e "s/group = www-data/group = nginx/g" \
-        -e "s/;listen.mode = 0660/listen.mode = 0666/g" \
-        -e "s/;listen.owner = www-data/listen.owner = nginx/g" \
-        -e "s/;listen.group = www-data/listen.group = nginx/g" \
-        -e "s/listen = 127.0.0.1:9000/listen = \/var\/run\/php-fpm.sock/g" \
-        -e "s/^;clear_env = no$/clear_env = no/" \
-        ${fpm_conf} && \
-    ln -sf /usr/local/etc/php/php.ini-development ${php_default_vars} && \
-    sed -i "s/expose_php = On/expose_php = Off/g" ${php_default_vars} && \
-    sed -i "s/display_errors = On/display_errors = Off/g" ${php_default_vars} && \
-    sed -i "s/expose_php = On/expose_php = Off/g" ${php_default_vars} && \
-    sed -i '/php_flag\[display_errors\]/ d' ${php_conf} && \
-    sed -i '/php_flag\[display_errors\]/ d' ${fpm_conf} && \
-    cd /usr/local/etc/php-fpm.d/ && ls /usr/local/etc/php-fpm.d/ | grep -v www | xargs rm -rf
-
-RUN chown -Rf nginx:nginx /data/project/www/ && \
-    chmod 755 /start.sh
+RUN chown -Rf nginx:nginx /data/project/www/ && chmod 755 /start.sh
 
 EXPOSE 80 443
 
