@@ -46,7 +46,7 @@ apcu bcmath pcntl openssl redis mongo xdebug protobuf grpc yaf yar swoole soap
 ```
 git clone https://github.com/liuyuqiang/nginx-php-fpm
 cd nginx-php-fpm/
-docker build -t nginx-php-fpm:v1.0.7 .
+docker build -t nginx-php-fpm:v1.0.8 .
 ```
 
 ### Building custom args
@@ -63,25 +63,25 @@ ARG ENABLE_PHP_EXTENSION_YAR=yes
 - example
 
 ```
-docker build -t nginx-php-fpm:v1.0.7 --build-arg ENABLE_PHP_EXTENSION_XDEBUG=no --build-arg ENABLE_PHP_EXTENSION_GRPC=yes --no-cache .
+docker build -t nginx-php-fpm:v1.0.8 --build-arg ENABLE_PHP_EXTENSION_XDEBUG=no --build-arg ENABLE_PHP_EXTENSION_GRPC=yes --no-cache .
 ```
 
 ### Pulling
 
 ```
 docker login --username=<docker username> --password=
-docker pull liuyuqiang/nginx-php-fpm:v1.0.7
+docker pull liuyuqiang/nginx-php-fpm:v1.0.8
 ```
 
 ### Running
 
 daemon mode
 ```
-docker run --name="nginx-php-fpm" -d liuyuqiang/nginx-php-fpm:v1.0.7
+docker run --name="nginx-php-fpm" -d liuyuqiang/nginx-php-fpm:v1.0.8
 ```
 clean up mode
 ```
-docker run --name="nginx-php-fpm" --rm liuyuqiang/nginx-php-fpm:v1.0.7
+docker run --name="nginx-php-fpm" --rm liuyuqiang/nginx-php-fpm:v1.0.8
 ```
 
 ### docker exec
