@@ -353,6 +353,7 @@ ADD conf/php/php.ini /usr/local/etc/php/php.ini
 ADD conf/php/conf.d/ /usr/local/etc/php/conf.d/
 ADD conf/php/php-fpm.conf /usr/local/etc/php-fpm.conf
 ADD conf/php/php-fpm.d/ /usr/local/etc/php-fpm.d/
+ADD scripts/start.sh /start.sh
 
 RUN chown -Rf nginx:nginx /data/project/www/ && chmod 755 /start.sh
 
