@@ -345,7 +345,7 @@ RUN mkdir -p /data/project/supervisor/conf.d/ && \
     rm -Rf /usr/local/etc/php-fpm.d/*
 
 # Copy custom config
-ADD conf/nginx.conf /etc/nginx/nginx.conf
+ADD conf/nginx/nginx.conf /etc/nginx/nginx.conf
 ADD conf/nginx/include/ /etc/nginx/include/
 ADD conf/www/ /data/project/www/
 ADD conf/supervisord.conf /etc/supervisord.conf
