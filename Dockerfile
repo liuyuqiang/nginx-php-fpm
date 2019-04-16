@@ -192,7 +192,9 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv iotop tshark && \
     apk add --no-cache tcpdump tcpflow nload iperf bind-tools net-tools sysstat strace ltrace tree readline screen vim && \
-    apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz
+    apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz && \
+    # DEPENDENCY TO ALLOW USERS TO RUN crontab
+    apk add --no-cache --update busybox-suid
 
 RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
     echo /etc/apk/respositories && \
@@ -344,7 +346,6 @@ RUN mkdir -p /data/project/supervisor/conf.d/ && \
     mkdir -p /data/logs/nginx/ && \
     mkdir -p /data/logs/supervisor/ && \
     ln -sf /dev/stdout /data/logs/supervisor/supervisord.log
-
 
 # Copy custom config
 ADD conf/nginx.conf /etc/nginx/nginx.conf
