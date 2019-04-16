@@ -341,7 +341,8 @@ RUN mkdir -p /data/project/supervisor/conf.d/ && \
     mkdir -p /data/logs/supervisor/ && \
     ln -sf /dev/stdout /data/logs/supervisor/supervisord.log && \
     rm -Rf /var/www/* && \
-    rm -Rf /etc/nginx/nginx.conf && \
+    rm -Rf /etc/nginx/nginx.conf 
+    # rm -Rf /etc/nginx/nginx.conf && \
     # php-fpm config
     # cd /usr/local/etc/php-fpm.d/ && ls /usr/local/etc/php-fpm.d/ | grep -v www | xargs rm -rf
 
