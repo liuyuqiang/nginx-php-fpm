@@ -3,9 +3,9 @@ FROM php:7.3.4-fpm-alpine3.9
 LABEL maintainer="liuyuqiang <yuqiangliu@outlook.com>"
 
 ENV LANG=C.UTF-8 \
-    NGINX_VERSION=1.15.11 \
-    LUA_MODULE_VERSION=0.10.14 \
-    DEVEL_KIT_MODULE_VERSION=0.3.0 \
+    NGINX_VERSION=1.17.8 \
+    LUA_MODULE_VERSION=0.10.15 \
+    DEVEL_KIT_MODULE_VERSION=0.3.1 \
     LUAJIT_VERSION=2.1-20190329 \
     LUAJIT_LIB=/usr/lib \
     LUAJIT_INC=/usr/include/luajit-2.1
@@ -104,7 +104,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     perl-dev \
   && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
   && curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
-  && curl -fSL https://github.com/simpl/ngx_devel_kit/archive/v$DEVEL_KIT_MODULE_VERSION.tar.gz -o ndk.tar.gz \
+  && curl -fSL https://github.com/vision5/ngx_devel_kit/archive/v$DEVEL_KIT_MODULE_VERSION.tar.gz -o ndk.tar.gz \
   && curl -fSL https://github.com/openresty/lua-nginx-module/archive/v$LUA_MODULE_VERSION.tar.gz -o lua.tar.gz \
   && export GNUPGHOME="$(mktemp -d)" \
   && found=''; \
