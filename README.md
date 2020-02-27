@@ -20,7 +20,7 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 | Python | 2.7.15 |
 | Supervisor | 3.3.4 |
 | Perl | 5.26.3 |
-| LuaJIT	|https://github.com/openresty/luajit2/releases/tag/v2.1-20200102(openresty/luajit2)|
+| LuaJIT	|https://github.com/openresty/luajit2/releases/tag/v2.1-20200102 (openresty/luajit2)|
 
 ### Docker Layout
 
