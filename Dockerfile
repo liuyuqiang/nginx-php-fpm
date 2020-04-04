@@ -4,7 +4,7 @@ LABEL maintainer="liuyuqiang <yuqiangliu@outlook.com>"
 
 ENV LANG=C.UTF-8 \
     NGINX_VERSION=1.17.8 \
-    LUA_MODULE_VERSION=0.10.15 \
+    LUA_MODULE_VERSION=0.10.14 \
     DEVEL_KIT_MODULE_VERSION=0.3.1 \
     LUAJIT_VERSION=2.1-20200102 \
     LUAJIT_LIB=/usr/lib \
