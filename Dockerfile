@@ -187,7 +187,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv iotop tshark && \
-    apk add --no-cache busybox-extras tcpdump tcpflow nload iperf bind-tools net-tools sysstat strace ltrace tree readline screen tmux vim && \
+    apk add --no-cache busybox-extras gdb tcpdump tcpflow nload iperf bind-tools net-tools sysstat strace ltrace tree readline screen tmux vim && \
     apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz && \
     # DEPENDENCY TO ALLOW USERS TO RUN crontab
     apk add --no-cache --update busybox-suid
