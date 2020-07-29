@@ -229,10 +229,10 @@ RUN echo @main http://nl.alpinelinux.org/alpine/edge/main >> /etc/apk/repositori
     postgresql-dev && \
     docker-php-ext-configure gd \
       --with-gd \
-      --with-webp-dir=/usr/include/ \
-      --with-freetype-dir=/usr/include/ \
-      --with-png-dir=/usr/include/ \
-      --with-jpeg-dir=/usr/include/ && \
+      --with-webp=/usr/include/ \
+      --with-freetype=/usr/include/ \
+      --with-png=/usr/include/ \
+      --with-jpeg=/usr/include/ && \
     docker-php-ext-install iconv pdo_mysql pdo_sqlite pgsql pdo_pgsql mysqli gd exif intl xsl json soap dom zip opcache bcmath pcntl && \
     pecl channel-update pecl.php.net && \
     pecl install -o -f redis && \
