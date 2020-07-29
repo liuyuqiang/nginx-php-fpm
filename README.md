@@ -14,12 +14,12 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 |-----|-------|
 | Docker | 18.09.4|
 | Alpine | 3.9 |
-| Git | 2.20.1 |
+| Git | 2.26.2 |
 | Nginx | 1.17.8 |
 | PHP  | 7.4.8 |
 | Python | 3.8.5 |
 | Supervisor | 4.2.0 |
-| Perl | 5.26.3 |
+| Perl | 5.30.3 |
 | LuaJIT	|https://github.com/openresty/luajit2/releases/tag/v2.1-20200102 (openresty/luajit2)|
 
 ### Docker Layout
@@ -46,7 +46,7 @@ apcu bcmath pcntl openssl redis mongo xdebug protobuf grpc yaf yar swoole soap
 ```
 git clone https://github.com/liuyuqiang/nginx-php-fpm
 cd nginx-php-fpm/
-docker build -t nginx-php-fpm:v1.1.0 .
+docker build -t nginx-php-fpm:v1.1.9 .
 ```
 
 ### Building custom args
@@ -63,25 +63,25 @@ ARG ENABLE_PHP_EXTENSION_YAR=yes
 - example
 
 ```
-docker build -t nginx-php-fpm:v1.1.0 --build-arg ENABLE_PHP_EXTENSION_XDEBUG=no --build-arg ENABLE_PHP_EXTENSION_GRPC=yes --no-cache .
+docker build -t nginx-php-fpm:v1.1.9 --build-arg ENABLE_PHP_EXTENSION_XDEBUG=no --build-arg ENABLE_PHP_EXTENSION_GRPC=yes --no-cache .
 ```
 
 ### Pulling
 
 ```
 docker login --username=<docker username> --password=
-docker pull liuyuqiang/nginx-php-fpm:v1.1.0
+docker pull liuyuqiang/nginx-php-fpm:v1.1.9
 ```
 
 ### Running
 
 daemon mode
 ```
-docker run --name="nginx-php-fpm" -d liuyuqiang/nginx-php-fpm:v1.1.0
+docker run --name="nginx-php-fpm" -d liuyuqiang/nginx-php-fpm:v1.1.9
 ```
 clean up mode
 ```
-docker run --name="nginx-php-fpm" --rm liuyuqiang/nginx-php-fpm:v1.1.0
+docker run --name="nginx-php-fpm" --rm liuyuqiang/nginx-php-fpm:v1.1.9
 ```
 
 ### docker exec
