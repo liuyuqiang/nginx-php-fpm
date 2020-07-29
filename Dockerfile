@@ -229,8 +229,6 @@ RUN echo @main http://nl.alpinelinux.org/alpine/edge/main >> /etc/apk/repositori
     postgresql-dev && \
     docker-php-ext-configure gd \
       --enable-gd \
-      --enable-gd-native-ttf \
-      --enable-gd-jis-conv \
       --with-webp=/usr/include/ \
       --with-freetype=/usr/include/ \
       --with-jpeg=/usr/include/ && \
