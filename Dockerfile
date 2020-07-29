@@ -228,10 +228,11 @@ RUN echo @main http://nl.alpinelinux.org/alpine/edge/main >> /etc/apk/repositori
     libjpeg-turbo-dev \
     postgresql-dev && \
     docker-php-ext-configure gd \
-      --with-gd \
+      --enable-gd \
+      --enable-gd-native-ttf \
+      --enable-gd-jis-conv \
       --with-webp=/usr/include/ \
       --with-freetype=/usr/include/ \
-      --with-png=/usr/include/ \
       --with-jpeg=/usr/include/ && \
     docker-php-ext-install iconv pdo_mysql pdo_sqlite pgsql pdo_pgsql mysqli gd exif intl xsl json soap dom zip opcache bcmath pcntl && \
     pecl channel-update pecl.php.net && \
