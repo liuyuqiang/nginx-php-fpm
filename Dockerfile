@@ -186,30 +186,29 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 
 # resolves #166
 ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
-RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv iotop tshark && \
+RUN apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/community gnu-libiconv iotop tshark libmcrypt-dev libzip-dev && \
     apk add --no-cache busybox-extras gdb tcpdump tcpflow nload iperf bind-tools net-tools sysstat strace ltrace tree readline screen tmux vim unzip && \
     apk add --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ lrzsz && \
     # DEPENDENCY TO ALLOW USERS TO RUN crontab
     apk add --no-cache --update busybox-suid
 
-RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
+RUN echo @main http://nl.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories && \
     echo /etc/apk/respositories && \
     apk update && apk upgrade &&\
     apk add --no-cache \
     bash \
     openssh-client \
     wget \
+    python3 \
+    python3-dev \
+    py3-pip \
     supervisor \
     curl \
     libcurl \
-    libzip-dev \
     bzip2-dev \
     imap-dev \
     openssl-dev \
     git \
-    python \
-    python-dev \
-    py-pip \
     augeas-dev \
     ca-certificates \
     dialog \
@@ -218,7 +217,6 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     gcc \
     musl-dev \
     linux-headers \
-    libmcrypt-dev \
     libpng-dev \
     libwebp-dev \
     icu-dev \
@@ -250,8 +248,8 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer && \
     rm composer-setup.php && \
-    pip install -U pip && \
-    apk del gcc musl-dev linux-headers libffi-dev augeas-dev python-dev make autoconf libwebp-dev heimdal-dev
+    pip3 install --upgrade pip && \
+    apk del gcc musl-dev linux-headers libffi-dev augeas-dev python3-dev make autoconf libwebp-dev heimdal-dev
 
 # Install protoc & Enable grpc
 RUN if [ "`echo "$ENABLE_PHP_EXTENSION_GRPC" | tr '[:upper:]' '[:lower:]'`" == "yes" ]; then \
