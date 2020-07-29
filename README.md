@@ -16,7 +16,7 @@ This is a Dockerfile/image to build a container for alpine nginx php-fpm :
 | Alpine | 3.9 |
 | Git | 2.20.1 |
 | Nginx | 1.17.8 |
-| PHP  | 7.3.4 |
+| PHP  | 7.4.8 |
 | Python | 2.7.15 |
 | Supervisor | 3.3.4 |
 | Perl | 5.26.3 |
